@@ -1,6 +1,14 @@
 # PROJECT-3_FunctionJunction
 Project 3 Part 1: Functional programming
 
+## --> When Turning Final Project In:
+- One FULL Lisp Code with all of our Functions combined into it!
+
+## --> Due Date:
+December 3, 2024
+
+
+## Project Overview
 The purpose of the project is to familiarize you with functional programming and the Common Lisp development environment. Please finish the functions below and submit your lisp source code file on Canvas.
 
 Note: Use only the following standard Lisp functions, macros, operators, and constants in your definitions, along with any previously completed functions in this project:
