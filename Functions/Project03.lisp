@@ -50,7 +50,9 @@
 ;;  (boolean-xor nil nil) => nil
 
 (defun boolean-xor (a b)
- (and (not (and a b)) (or a b))
+ (and (not (and a b)) ; Returns true if both inputs are not true
+      (or a b)) ; Returns true if at least one input is true
+  ;; Combined effect: returns true only when exactly one input is true
 )
 
 
