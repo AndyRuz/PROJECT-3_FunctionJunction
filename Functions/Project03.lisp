@@ -25,11 +25,13 @@
 ;;   (set-intersection '(1 2) '(2 4)) => '(2)
 
 (defun set-intersection (set-1 set-2)
- (if (equal set-1 '()) ;check if set-1 is empty (empty intersection).
+ (if (equal set-1 '()) ; See if set-1 is empty (empty intersection).
       '()
-      (if (set-member set-2 (car set-1)) ;checks if the first element of set-1 is also a member of set-2
-          (cons (car set-1) (set-intersection (cdr set-1) set-2)) ;first item in set-1 is a member of set-2, creates a new list, checks rest of list.
-          (set-intersection (cdr set-1) set-2))) ;first item fo set-1 is not a member of set-2, check rest of list
+      (if (set-member set-2 (car set-1)) ; Checks if the first element of set-1 is also a member of set-2
+          (cons (car set-1) (set-intersection (cdr set-1) set-2)) ; First item in set-1 is a member of set-2
+                                                                  ; Creates a new list, checks rest of list.
+          (set-intersection (cdr set-1) set-2)))  ; First item fo set-1 is not a member of set-2.
+                                                  ; Check rest of list.
 
 
 ;;;; Function 4: set-diff
