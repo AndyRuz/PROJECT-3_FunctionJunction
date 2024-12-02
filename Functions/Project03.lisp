@@ -6,6 +6,35 @@
     ((equal (first set) item) t)             ; found item
     (t (set-member (cdr set) item))))        ; recurse on rest of set
 
+;;FUNCTION 2 Union of set-1 and set-2
+;; Set Union Function 
+
+(defun set-union (set-1 set-2) 
+
+  (cond  
+
+    ((null set-2) set-1) 
+
+    ((my-member (car set-2) set-1)  
+
+     (set-union set-1 (cdr set-2))) 
+
+    (t  
+
+     (set-union (cons (car set-2) set-1) (cdr set-2))))) 
+
+;; Helper function for set membership 
+
+(defun my-member (x set) 
+
+  (cond  
+
+    ((null set) nil) 
+
+    ((equal x (car set)) t) 
+
+    (t (my-member x (cdr set)))))
+
 
 
 
@@ -36,6 +65,7 @@
 
 
 
+
 ;; FUNCTION 5:
 ;; Return the exclusive or of a and b
 ;; Examples:
@@ -54,8 +84,115 @@
   (or (not a) b))                           ; checks (!a||b)
 
 
+;; Function 7 Boolean AND,OR,NOT,XOR,IF,IFF
 
+;; Helper function for AND evaluation - evaluates raw expressions 
 
+(defun eval-and (lst) 
+  (cond  
+    ((null lst) t) 
+    ((equal (car lst) nil) nil) 
+    ((equal (car lst) t) (eval-and (cdr lst))) 
+    ((equal (car (car lst)) 'not)  
+     (if (eval-not (car (cdr (car lst)))) 
+         (eval-and (cdr lst)) 
+         nil)) 
+    ((equal (car (car lst)) 'and)  
+     (if (eval-and (cdr (car lst))) 
+         (eval-and (cdr lst)) 
+         nil)) 
+    ((equal (car (car lst)) 'or)  
+     (if (eval-or (cdr (car lst))) 
+         (eval-and (cdr lst)) 
+         nil)) 
+    (t nil))) 
+
+  
+
+;; Helper function for OR evaluation - evaluates raw expressions 
+
+(defun eval-or (lst) 
+  (cond  
+    ((null lst) nil) 
+    ((equal (car lst) t) t) 
+    ((equal (car lst) nil) (eval-or (cdr lst))) 
+    ((equal (car (car lst)) 'not)  
+     (if (eval-not (car (cdr (car lst)))) 
+         t 
+         (eval-or (cdr lst)))) 
+    ((equal (car (car lst)) 'and)  
+     (if (eval-and (cdr (car lst))) 
+         t 
+         (eval-or (cdr lst)))) 
+    ((equal (car (car lst)) 'or)  
+     (if (eval-or (cdr (car lst))) 
+         t 
+         (eval-or (cdr lst)))) 
+    (t nil))) 
+
+  
+
+;; Helper function for NOT evaluation 
+
+(defun eval-not (exp) 
+  (cond 
+    ((equal exp t) nil) 
+    ((equal exp nil) t) 
+    ((equal (car exp) 'not) (not (eval-not (car (cdr exp))))) 
+    ((equal (car exp) 'and) (not (eval-and (cdr exp)))) 
+    ((equal (car exp) 'or) (not (eval-or (cdr exp)))) 
+    (t nil))) 
+
+  
+
+;; Boolean Evaluation Function with additional operations 
+
+(defun boolean-eval (exp) 
+  (cond  
+    ((equal exp t) t) 
+    ((equal exp nil) nil) 
+    ((equal (car exp) 'not)  
+     (eval-not (car (cdr exp)))) 
+    ((equal (car exp) 'and) 
+     (eval-and (cdr exp))) 
+    ((equal (car exp) 'or) 
+     (eval-or (cdr exp))) 
+    ((equal (car exp) 'xor) 
+     (eval-xor (cdr exp))) 
+    ((equal (car exp) 'implies) 
+     (eval-implies (car (cdr exp)) (car (cdr (cdr exp))))) 
+    ((equal (car exp) 'iff) 
+     (boolean-iff (boolean-eval (car (cdr exp)))  
+                  (boolean-eval (car (cdr (cdr exp)))))) 
+    (t nil))) 
+
+  
+
+;; XOR evaluation helper 
+
+(defun eval-xor (lst) 
+  (cond 
+    ((null lst) nil) 
+    ((null (cdr lst)) (boolean-eval (car lst))) 
+    (t (let ((first-val (boolean-eval (car lst))) 
+             (second-val (boolean-eval (car (cdr lst))))) 
+         (and (or first-val second-val) 
+              (not (and first-val second-val))))))) 
+
+  
+
+;; Implication helper 
+
+(defun eval-implies (p q) 
+  (or (not (boolean-eval p)) 
+      (boolean-eval q)))  
+
+ 
+;;FUNCTION 8 Boolean Bi-Implication 
+
+(defun boolean-iff (a b) 
+  (or (and (equal a t) (equal b t)) 
+      (and (equal a nil) (equal b nil))))
 
 
 
