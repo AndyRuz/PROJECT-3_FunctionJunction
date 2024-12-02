@@ -8,34 +8,13 @@
 
 ;;FUNCTION 2 Union of set-1 and set-2
 ;; Set Union Function 
-
-(defun set-union (set-1 set-2) 
-
-  (cond  
-
-    ((null set-2) set-1) 
-
-    ((my-member (car set-2) set-1)  
-
-     (set-union set-1 (cdr set-2))) 
-
-    (t  
-
-     (set-union (cons (car set-2) set-1) (cdr set-2))))) 
-
-;; Helper function for set membership 
-
-(defun my-member (x set) 
-
-  (cond  
-
-    ((null set) nil) 
-
-    ((equal x (car set)) t) 
-
-    (t (my-member x (cdr set)))))
-
-
+(defun set-union (set-1 set-2)
+  (cond
+    ((null set-2) set-1)
+    ((set-member set-1 (car set-2))     ; Swapped argument order to make compatible with set-member
+     (set-union set-1 (cdr set-2)))
+    (t
+     (set-union (cons (car set-2) set-1) (cdr set-2)))))
 
 
 
@@ -62,8 +41,6 @@
      (cons (first set-1)                     ; include it in result
            (set-diff (cdr set-1) set-2)))    ; and recurse on rest
     (t (set-diff (cdr set-1) set-2))))      ; else skip element and recurse
-
-
 
 
 ;; FUNCTION 5:
@@ -147,48 +124,30 @@
 
 ;; Boolean Evaluation Function with additional operations 
 
-(defun boolean-eval (exp) 
-  (cond  
-    ((equal exp t) t) 
-    ((equal exp nil) nil) 
-    ((equal (car exp) 'not)  
-     (eval-not (car (cdr exp)))) 
-    ((equal (car exp) 'and) 
-     (eval-and (cdr exp))) 
-    ((equal (car exp) 'or) 
-     (eval-or (cdr exp))) 
-    ((equal (car exp) 'xor) 
-     (eval-xor (cdr exp))) 
-    ((equal (car exp) 'implies) 
-     (eval-implies (car (cdr exp)) (car (cdr (cdr exp))))) 
-    ((equal (car exp) 'iff) 
-     (boolean-iff (boolean-eval (car (cdr exp)))  
-                  (boolean-eval (car (cdr (cdr exp)))))) 
-    (t nil))) 
+(defun boolean-eval (exp)
+  (cond
+    ((equal exp t) t)
+    ((equal exp nil) nil)
+    ((equal (car exp) 'not)
+     (eval-not (car (cdr exp))))
+    ((equal (car exp) 'and)
+     (eval-and (cdr exp)))
+    ((equal (car exp) 'or)
+     (eval-or (cdr exp)))
+    ((equal (car exp) 'xor)
+     (boolean-xor (boolean-eval (first (cdr exp)))     ; Using first instead of cadr
+                  (boolean-eval (second (cdr exp)))))  ; Using second instead of caddr
+    ((equal (car exp) 'implies)
+     (boolean-implies (boolean-eval (first (cdr exp)))
+                     (boolean-eval (second (cdr exp)))))
+    ((equal (car exp) 'iff)
+     (boolean-iff (boolean-eval (car (cdr exp)))
+                  (boolean-eval (car (cdr (cdr exp))))))
+    (t nil)))
 
   
-
-;; XOR evaluation helper 
-
-(defun eval-xor (lst) 
-  (cond 
-    ((null lst) nil) 
-    ((null (cdr lst)) (boolean-eval (car lst))) 
-    (t (let ((first-val (boolean-eval (car lst))) 
-             (second-val (boolean-eval (car (cdr lst))))) 
-         (and (or first-val second-val) 
-              (not (and first-val second-val))))))) 
-
-  
-
-;; Implication helper 
-
-(defun eval-implies (p q) 
-  (or (not (boolean-eval p)) 
-      (boolean-eval q)))  
-
  
-;;FUNCTION 8 Boolean Bi-Implication 
+;;FUNCTION 8: Boolean Bi-Implication 
 
 (defun boolean-iff (a b) 
   (or (and (equal a t) (equal b t)) 
