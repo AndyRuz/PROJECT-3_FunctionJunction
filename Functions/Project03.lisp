@@ -164,28 +164,41 @@
 ;;     (merge-sort '(2 1 5 0) #'<) => '(0 1 2 5)
 ;;     (merge-sort '(2 1 5 0) #'>) => '(5 2 1 0
 
-
-(defun merge-sort (list predicate)
-  (labels ((split (lst n acc)
-             (cond 
-               ((= n 0) (list acc lst))
-               ((not lst) (list acc nil))
-               (t (split (cdr lst) 
-                        (- n 1)
-                        (cons (car lst) acc)))))
-           
+defun merge-sort (list predicate)
+  ;; Using labels to define helper functions that are only used within merge-sort
+  (labels (
+           ;; Helper function to merge two sorted lists into one sorted list
+           ;; Takes two lists and returns a single sorted list
            (merge-lists (left right)
-             (cond ((not left) right)
-                   ((not right) left)
-                   ((funcall predicate (car left) (car right))
-                    (cons (car left) (merge-lists (cdr left) right)))
-                   (t (cons (car right) (merge-lists left (cdr right)))))))
+             (cond 
+               ((not left) right)    ; If left list is empty, use right list
+               ((not right) left)    ; If right list is empty, use left list
+               ;; Compare first elements using predicate (< or >)
+               ((funcall predicate (car left) (car right))
+                ;; If left element should come first, add it to result
+                ;; and merge rest of left list with right list
+                (cons (car left) (merge-lists (cdr left) right)))
+               ;; If right element should come first, add it to result
+               ;; and merge left list with rest of right list
+               (t (cons (car right) (merge-lists left (cdr right))))))
+           
+           ;; Helper function to split a list into two parts
+           ;; Returns a cons cell where car is first element and cdr is rest of list
+           (split (lst)
+             ;; Handle empty list or single element list
+             (if (or (not lst) (not (cdr lst)))
+                 (cons lst nil)
+                 ;; For longer lists, split after first element
+                 (let* ((rest (cdr lst)))
+                   (cons (cons (car lst) nil) rest)))))
     
+    ;; Main merge-sort logic
     (cond 
-      ((not list) nil)
-      ((not (cdr list)) list)
-      (t (let* ((len (length list))
-                (mid (/ len 2))
-                (halves (split list mid nil)))
-           (merge-lists (merge-sort (first halves) predicate)
-                       (merge-sort (second halves) predicate)))))))
+      ((not list) nil)              ; Empty list is already sorted
+      ((not (cdr list)) list)       ; Single element list is already sorted
+      (t (let* ((split-result (split list))     ; Split the input list
+                (left (car split-result))        ; Get left part
+                (right (cdr split-result)))      ; Get right part
+           ;; Recursively sort both parts and merge them together
+           (merge-lists (merge-sort left predicate)
+                       (merge-sort right predicate)))))))
