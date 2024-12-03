@@ -209,84 +209,27 @@
 ;;Testing: 
 
 ;;Union: 
-
 (set-union '(1 2 3) '(3 4 5)) 
-
 (set-union '(1 2 3) '(1 2 3)) 
-
 (set-union '(1 2 3) '(4 5 6)) 
-
 (set-union '() '(3 4 5)) 
+(set-union '() '()) 
 
-Boolean: 
+;;Boolean: 
+(boolean-eval '(implies t nil))
+(boolean-eval '(iff nil t)) 
+
 ;; Nested With recursion:
-(boolean-eval '(or t (or nil (xor nil t))))
+(boolean-eval '(or nil (and t t)))
 (boolean-eval '(and (and t nil) (or nil (xor nil t))))
 (boolean-eval '(and t (or nil (iff t t))))
 
-;;and 
-
- (boolean-eval '(and t nil)) 
-
-(boolean-eval '(and t t)) 
-
-(boolean-eval '(and nil nil)) 
-
-(boolean-eval '(and nil t)) 
-
-;;or 
-
-(boolean-eval '(or t nil)) 
-
-(boolean-eval '(or t t)) 
-
-(boolean-eval '(or nil nil)) 
-
-(boolean-eval '(or nil t)) 
-
-;;Xor 
-
-(boolean-eval '(xor t nil))  
-
-(boolean-eval '(xor t t)) 
-
-(boolean-eval '(xor nil nil)) 
-
-(boolean-eval '(xor nil t)) 
-
-
- 
-
-;;Implies     
-
-(boolean-eval '(implies t nil))   
-
-(boolean-eval '(implies t t))   
-
-(boolean-eval '(implies nil nil))   
-
-(boolean-eval '(implies nil t))   
-
-;;IFF 
-
-(boolean-eval '(iff t t))  
-
-(boolean-eval '(iff t nil)) 
-
-(boolean-eval '(iff nil t)) 
-
-(boolean-eval '(iff nil nil)) 
-
- 
+(boolean-eval '(and (and t t) nil))
+(boolean-eval '(and (and t t) (or nil (iff t t))))
 
 ;;Bi-Implication     
 
- 
-
 (boolean-iff t nil) 
-
 (boolean-iff t t) 
-
 (boolean-iff nil nil) 
-
 (boolean-iff nil t) 
