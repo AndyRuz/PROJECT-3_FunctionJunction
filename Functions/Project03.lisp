@@ -133,14 +133,22 @@
     ((equal exp t) t)
     ((equal exp nil) nil)
     ((equal (car exp) 'not)
-     (eval-not (car (cdr exp))))
+     (not (boolean-eval (first (cdr exp)))))
     ((equal (car exp) 'and)
-     (eval-and (cdr exp)))
+     (cond
+       ((null (cdr exp)) t)                     ; Empty AND is true
+       ((null (cdr (cdr exp))) (boolean-eval (first (cdr exp))))  ; Single argument
+       (t (and (boolean-eval (first (cdr exp)))      ; First arg
+              (boolean-eval (cons 'and (cdr (cdr exp))))))))  ; Rest
     ((equal (car exp) 'or)
-     (eval-or (cdr exp)))
+     (cond
+       ((null (cdr exp)) nil)                   ; Empty OR is false
+       ((null (cdr (cdr exp))) (boolean-eval (first (cdr exp))))  ; Single argument
+       (t (or (boolean-eval (first (cdr exp)))       ; First arg
+             (boolean-eval (cons 'or (cdr (cdr exp))))))))  ; Rest
     ((equal (car exp) 'xor)
-     (boolean-xor (boolean-eval (first (cdr exp)))     ; Using first instead of cadr
-                  (boolean-eval (second (cdr exp)))))  ; Using second instead of caddr
+     (boolean-xor (boolean-eval (first (cdr exp)))
+                  (boolean-eval (second (cdr exp)))))
     ((equal (car exp) 'implies)
      (boolean-implies (boolean-eval (first (cdr exp)))
                      (boolean-eval (second (cdr exp)))))

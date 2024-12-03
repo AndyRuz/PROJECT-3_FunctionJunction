@@ -1,13 +1,9 @@
 ;; Helper function for set membership 
 
 (defun my-member (x set) 
-
   (cond  
-
     ((null set) nil) 
-
     ((equal x (car set)) t) 
-
     (t (my-member x (cdr set))))) 
 
   
@@ -223,6 +219,10 @@
 (set-union '() '(3 4 5)) 
 
 Boolean: 
+;; Nested With recursion:
+(boolean-eval '(or t (or nil (xor nil t))))
+(boolean-eval '(and (and t nil) (or nil (xor nil t))))
+(boolean-eval '(and t (or nil (iff t t))))
 
 ;;and 
 
@@ -253,6 +253,7 @@ Boolean:
 (boolean-eval '(xor nil nil)) 
 
 (boolean-eval '(xor nil t)) 
+
 
  
 
